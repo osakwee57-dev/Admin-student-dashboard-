@@ -1,0 +1,6 @@
+{
+  "name": "Admin Central",
+  "description": "Multi-tenant institutional administration portal with secure code-based access control.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
