@@ -373,6 +373,7 @@ const HistoryItem: React.FC<HistoryItemProps> = ({ item, onMarkPaid, institution
 
   const downloadPDF = () => {
     const doc = new jsPDF();
+    let total = 0;
     
     // Design Header
     doc.setFillColor(79, 70, 229); // Indigo-600
@@ -410,30 +411,33 @@ const HistoryItem: React.FC<HistoryItemProps> = ({ item, onMarkPaid, institution
     // Table Headers
     doc.setTextColor(30, 41, 59);
     doc.setFont('helvetica', 'bold');
-    doc.text("ITEM DESCRIPTION", 25, 100);
+    doc.text("ITEM DESCRIPTION", 20, 100);
     doc.text("AMOUNT (NGN)", 150, 100);
     
     doc.setDrawColor(226, 232, 240); // Slate-200
     doc.line(20, 105, 190, 105);
 
     // Table Content
-    let y = 115;
+    let yPos = 115;
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(71, 85, 105); // Slate-600
     
-    item.items.forEach((line) => {
-      doc.text(line.detail || 'N/A', 25, y);
-      doc.text(`₦${parseFloat(line.amount || '0').toLocaleString()}`, 150, y);
-      y += 12;
-    });
+    if (item.items && Array.isArray(item.items)) {
+      item.items.forEach((line) => {
+        doc.text(line.detail, 20, yPos);
+        doc.text(`N${parseFloat(line.amount).toLocaleString()}`, 150, yPos);
+        total += parseFloat(line.amount);
+        yPos += 10;
+      });
+    }
 
     // Total Section
     doc.line(20, 200, 190, 200);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(30, 41, 59);
-    doc.text("TOTAL AMOUNT DUE", 25, 215);
+    doc.text("TOTAL AMOUNT DUE", 20, 215);
     doc.setFontSize(18);
-    doc.text(`₦${total.toLocaleString()}`, 145, 215);
+    doc.text(`N${total.toLocaleString()}`, 145, 215);
 
     // Footer
     doc.setFontSize(8);
