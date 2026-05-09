@@ -15,6 +15,7 @@ import StudentSection from './StudentSection';
 import FeesAndReceipts from './FeesAndReceipts';
 import ExamResults from './ExamResults';
 import MessageSection from './MessageSection';
+import SettingsSection from './SettingsSection';
 
 type Section = 'students' | 'fees' | 'exams' | 'messages' | 'settings';
 
@@ -56,6 +57,8 @@ export default function Dashboard() {
         return <ExamResults adminCode={adminCode} />;
       case 'messages':
         return <MessageSection adminCode={adminCode} />;
+      case 'settings':
+        return <SettingsSection adminCode={adminCode} onUpdateInstitution={setInstitution} />;
       default:
         return <PlaceholderSection title="Under Construction" icon={<Settings size={48} />} />;
     }

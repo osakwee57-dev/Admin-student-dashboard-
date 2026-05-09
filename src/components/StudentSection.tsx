@@ -64,6 +64,12 @@ export default function StudentSection({ adminCode }: StudentSectionProps) {
     s.student_class.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const totalStudents = students.length;
+  const classCounts = students.reduce((acc, student) => {
+    acc[student.student_class] = (acc[student.student_class] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
   if (selectedStudent) {
     return (
       <motion.div 
@@ -115,6 +121,28 @@ export default function StudentSection({ adminCode }: StudentSectionProps) {
 
   return (
     <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-indigo-600 p-6 rounded-3xl text-white shadow-lg shadow-indigo-100 flex flex-col justify-center">
+          <p className="text-xs font-bold opacity-80 uppercase tracking-widest mb-1">Total Students</p>
+          <h1 className="text-4xl font-extrabold">{totalStudents}</h1>
+        </div>
+        
+        <div className="md:col-span-3 bg-white border border-slate-200 p-6 rounded-3xl shadow-sm flex flex-col justify-center">
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Class Breakdown</p>
+          <div className="flex flex-wrap gap-2">
+            {Object.entries(classCounts).map(([className, count]) => (
+              <div key={className} className="px-3 py-1.5 bg-slate-50 border border-slate-100 rounded-xl flex items-center gap-2">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{className}</span>
+                <span className="text-sm font-extrabold text-slate-700">{count}</span>
+              </div>
+            ))}
+            {Object.keys(classCounts).length === 0 && (
+              <p className="text-xs text-slate-400 italic">No classes recorded yet</p>
+            )}
+          </div>
+        </div>
+      </div>
+
       <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="relative w-full md:w-96">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
