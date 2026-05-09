@@ -38,6 +38,9 @@ export default function StudentSection({ adminCode }: StudentSectionProps) {
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [classFilter, setClassFilter] = useState('All');
+
+  const classes = ['All', 'Jss1', 'Jss2', 'Jss3', 'Sss1', 'Sss2', 'Sss3'];
 
   useEffect(() => {
     fetchStudents();
@@ -59,10 +62,12 @@ export default function StudentSection({ adminCode }: StudentSectionProps) {
     setLoading(false);
   };
 
-  const filteredStudents = students.filter(s => 
-    `${s.surname} ${s.firstname}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    s.student_class.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredStudents = students.filter(s => {
+    const matchesSearch = `${s.surname} ${s.firstname}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         s.student_class.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesClass = classFilter === 'All' || s.student_class === classFilter;
+    return matchesSearch && matchesClass;
+  });
 
   const totalStudents = students.length;
   const classCounts = students.reduce((acc, student) => {
@@ -154,9 +159,18 @@ export default function StudentSection({ adminCode }: StudentSectionProps) {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <button className="w-full md:w-auto px-6 py-3 bg-indigo-600 text-white rounded-2xl font-bold text-sm hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 flex items-center justify-center gap-2">
-          Add New Student
-        </button>
+        <div className="flex gap-2 w-full md:w-auto">
+          <select 
+            className="w-full md:w-48 px-4 py-3 bg-white border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-sm shadow-sm appearance-none font-bold text-slate-700"
+            value={classFilter}
+            onChange={(e) => setClassFilter(e.target.value)}
+          >
+            {classes.map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
+          <button className="hidden px-6 py-3 bg-indigo-600 text-white rounded-2xl font-bold text-sm hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 items-center justify-center gap-2">
+            Add Student
+          </button>
+        </div>
       </div>
 
       <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
